@@ -231,10 +231,20 @@ function render(){
 
 function renderResult(){
   let correct = 0, answered = 0;
+  const wrong = [];
+
   quiz.forEach(q=>{
     const pick = answers.get(q.id);
-    if(typeof pick === 'number'){ answered++; if(pick === q.answer) correct++; }
+    if(typeof pick === 'number'){
+      answered++;
+      if(pick === q.answer){
+        correct++;
+      } else {
+        wrong.push(q);
+      }
+    }
   });
+
   const total = quiz.length;
   const pct = total ? Math.round(correct/total*100) : 0;
 
@@ -242,9 +252,15 @@ function renderResult(){
     <div class="card">
       <h3 style="margin-top:0">Результат</h3>
       <div><b>${correct}</b> / ${total} (${pct}%)</div>
-      <div class="muted" style="margin-top:6px">Отвечено: ${answered} / ${total}</div>
+      <div class="muted" style="margin-top:6px">
+        Отвечено: ${answered} / ${total}
+      </div>
+
       <div class="row" style="margin-top:12px">
         <button id="againBtn">Новая попытка</button>
+        <button id="wrongBtn" ${wrong.length ? "" : "disabled"}>
+          Повторить ошибки (${wrong.length})
+        </button>
         <button id="clearBtn">Очистить сохранение</button>
       </div>
     </div>
@@ -258,6 +274,10 @@ function renderResult(){
     render();
   };
 
+  document.getElementById('wrongBtn').onclick = ()=>{
+    startWrongMode(wrong);
+  };
+
   document.getElementById('clearBtn').onclick = ()=>{
     clearState();
     quiz = [];
@@ -267,6 +287,21 @@ function renderResult(){
     document.getElementById('resetBtn').disabled = true;
     render();
   };
+}
+
+function startWrongMode(wrongQuestions){
+  if(!wrongQuestions.length) return;
+
+  // перемешиваем и перемешиваем варианты
+  quiz = shuffle(wrongQuestions).map(shuffleQuestionOptions);
+
+  idx = 0;
+  answers = new Map();
+  meta.mode = "wrong";
+  meta.startedAt = new Date().toISOString();
+
+  saveState();
+  render();
 }
 
 async function startNew(){
