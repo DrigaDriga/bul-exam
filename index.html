@@ -91,11 +91,38 @@ function shuffle(arr){
   return a;
 }
 
+function shuffleQuestionOptions(q){
+  // создаём массив пар: {text, correct}
+  const pairs = q.options.map((text, i) => ({
+    text,
+    correct: i === q.answer
+  }));
+
+  // перемешиваем
+  const shuffled = shuffle(pairs);
+
+  // собираем обратно
+  const options = shuffled.map(p => p.text);
+  const answer = shuffled.findIndex(p => p.correct);
+
+  return {
+    ...q,
+    options,
+    answer
+  };
+}
+
 function pickQuiz(mode){
-  // всегда рандомный порядок
-  const shuffled = shuffle(allQuestions);
-  if(mode === 'all') return shuffled;
-  return shuffled.slice(0, Math.min(30, shuffled.length));
+  // сначала перемешиваем порядок вопросов
+  let base = shuffle(allQuestions);
+
+  // если режим 30 — обрезаем
+  if(mode !== 'all'){
+    base = base.slice(0, Math.min(30, base.length));
+  }
+
+  // перемешиваем варианты внутри каждого вопроса
+  return base.map(shuffleQuestionOptions);
 }
 
 async function loadSheet(sheet){
