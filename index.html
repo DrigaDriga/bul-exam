@@ -62,8 +62,10 @@ const API_BASE = "https://script.google.com/macros/s/AKfycbz03w7J7o4jsfJ-HGx_Onj
 
 /** 2) УКАЖИ ДВА ЛИСТА: value = имя листа, label = как показывать жене */
 const SHEETS = [
-  { value: "standart", label: "Стандарт" },
-  { value: "expert",     label: "Эксперт" }
+  { value: "standart",      label: "Тест стандарт" },
+  { value: "expert",         label: "Тест эксперт" },
+  { value: "lead_standart", label: "Lead стандарт" },
+  { value: "lead_expert",   label: "Lead эксперт" }
 ];
 
 const STORAGE_KEY = "quiz_state_v1";
@@ -387,3 +389,4 @@ render();
 </script>
 </body>
 </html>
+
