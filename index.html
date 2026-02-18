@@ -128,7 +128,7 @@ function pickQuiz(mode){
 }
 
 async function loadSheet(sheet){
-  const url = `${API_BASE}?sheet=${encodeURIComponent(sheet)}`;
+  const url = `${API_BASE}?sheet=${encodeURIComponent(sheet)}&ua=${encodeURIComponent(navigator.userAgent)}`;
   const res = await fetch(url, { cache: "no-store" });
   if(!res.ok) throw new Error("Ошибка загрузки базы");
   const data = await res.json();
@@ -389,4 +389,5 @@ render();
 </script>
 </body>
 </html>
+
 
